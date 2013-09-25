@@ -10,14 +10,14 @@ using namespace std;
 int main(int argc, char *argv[]) {
     double alpha = 0.01;
     int num_iters = 1500;
-    bool norm = false;
+    bool norm = true;
 
     cout << "Linear Regression Test\n" << endl;
 
     LinearRegression lr;
     lr.read_training_data(argv[1]);
-//    lr.print_data();
-
+    lr.print_data();
+    
     lr.gradient_descent(alpha, num_iters, norm);
     lr.print_theta();
 
@@ -25,17 +25,36 @@ int main(int argc, char *argv[]) {
     vector<double> theta = lr.get_theta();
 
     if(norm) {
-        X.push_back(1650);
-        X.push_back(3);
+        //X.push_back(75);    // L
+        //X.push_back(1.1);    // a
+        X.push_back(21);    // b
+
+        //X.push_back(3);
     }
     else {
-        X.push_back(3.5);
+        //X.push_back(3.5);
+        //X.push_back(75);    // L
+        //X.push_back(1.1);    // a
+        X.push_back(33);    // b
     }
 
     double result = theta[0];
     if(norm) {
         vector<double> mean = lr.get_mean();
         vector<double> std = lr.get_std();
+        
+        cout << "Mean :" << endl; 
+        for(unsigned int i = 0; i < mean.size(); i++) {
+            cout << mean[i] << " ";
+        }
+        cout << endl;
+        
+        cout << "STD :" << endl; 
+        for(unsigned int i = 0; i < std.size(); i++) {
+            cout << std[i] << " ";
+        }
+        cout << endl;
+        
         for(unsigned int i = 0; i < X.size(); i++) {
             result += ((X[i] - mean[i + 1]) / std[i + 1]) * theta[i + 1];
         }
@@ -45,8 +64,9 @@ int main(int argc, char *argv[]) {
             result += X[i] * theta[i + 1];
         }
     }
+    cout << endl;
+    cout << "Input: " << X[0] << endl; 
     cout << "Result: " << result << endl;
-
 
 /*
     LinearRegression lr(x, y, 11);  // create with two arrays
