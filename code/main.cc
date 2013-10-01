@@ -27,7 +27,17 @@ int main(int argc, char *argv[]) {
     if(norm) {
         //X.push_back(75);    // L
         //X.push_back(1.1);    // a
-        X.push_back(21);    // b
+        //X.push_back(21);    // b
+        
+        //X.push_back(77.1);    // L
+        //X.push_back(-0.5);    // a
+        //X.push_back(16.8);    // b
+        
+        X.push_back(77.4);    // L
+        X.push_back(0.2);    // a
+        X.push_back(27.9);    // b
+
+
 
         //X.push_back(3);
     }
@@ -65,7 +75,11 @@ int main(int argc, char *argv[]) {
         }
     }
     cout << endl;
-    cout << "Input: " << X[0] << endl; 
+    cout << "Input: " << endl; 
+    for(unsigned int i = 0; i < X.size(); i++) {
+        cout << X[i] << " ";
+    }
+    cout << endl;
     cout << "Result: " << result << endl;
 
 /*
