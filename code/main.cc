@@ -16,71 +16,63 @@ int main(int argc, char *argv[]) {
 
     LinearRegression lr;
     lr.read_training_data(argv[1]);
-    lr.print_data();
+    //lr.print_data();
     
     lr.gradient_descent(alpha, num_iters, norm);
-    lr.print_theta();
+    //lr.print_theta();
+    
+    lr.read_testing_data(argv[2]);
+    vector< vector<double> > testing_data = lr.get_testing_data();
+    vector<double> testing_predicted_data = lr.get_testing_predicted_data();
 
-    vector<double> X;
     vector<double> theta = lr.get_theta();
 
-    if(norm) {
-        //X.push_back(75);    // L
-        //X.push_back(1.1);    // a
-        //X.push_back(21);    // b
+    double mean_squared_error = 0;
+
+    for(unsigned int i = 0; i < testing_data.size(); i++) {
+        vector<double> X = testing_data[i];
         
-        //X.push_back(77.1);    // L
-        //X.push_back(-0.5);    // a
-        //X.push_back(16.8);    // b
-        
-        X.push_back(77.4);    // L
-        X.push_back(0.2);    // a
-        X.push_back(27.9);    // b
-
-
-
-        //X.push_back(3);
-    }
-    else {
-        //X.push_back(3.5);
-        //X.push_back(75);    // L
-        //X.push_back(1.1);    // a
-        X.push_back(33);    // b
-    }
-
-    double result = theta[0];
-    if(norm) {
-        vector<double> mean = lr.get_mean();
-        vector<double> std = lr.get_std();
-        
-        cout << "Mean :" << endl; 
-        for(unsigned int i = 0; i < mean.size(); i++) {
-            cout << mean[i] << " ";
+        double result = theta[0];
+        if(norm) {
+            vector<double> mean = lr.get_mean();
+            vector<double> std = lr.get_std();
+     /*       
+            cout << "Mean :" << endl; 
+            for(unsigned int i = 0; i < mean.size(); i++) {
+                cout << mean[i] << " ";
+            }
+            cout << endl;
+            
+            cout << "STD :" << endl; 
+            for(unsigned int i = 0; i < std.size(); i++) {
+                cout << std[i] << " ";
+            }
+            cout << endl;
+      */      
+            for(unsigned int i = 0; i < X.size(); i++) {
+                result += ((X[i] - mean[i + 1]) / std[i + 1]) * theta[i + 1];
+            }
+        }
+        else {
+            for(unsigned int i = 0; i < X.size(); i++) {
+                result += X[i] * theta[i + 1];
+            }
+        }
+        /*
+        cout << endl;
+        cout << "Input: " << endl; 
+        for(unsigned int j = 0; j < X.size(); j++) {
+            cout << X[j] << " ";
         }
         cout << endl;
-        
-        cout << "STD :" << endl; 
-        for(unsigned int i = 0; i < std.size(); i++) {
-            cout << std[i] << " ";
-        }
-        cout << endl;
-        
-        for(unsigned int i = 0; i < X.size(); i++) {
-            result += ((X[i] - mean[i + 1]) / std[i + 1]) * theta[i + 1];
-        }
+        cout << "Actual Result: " << testing_predicted_data[i] << endl;
+        cout << "Predicted Result: " << result << endl << endl;
+        //*/
+
+        mean_squared_error += (testing_predicted_data[i] - result) * (testing_predicted_data[i] - result);
     }
-    else {
-        for(unsigned int i = 0; i < X.size(); i++) {
-            result += X[i] * theta[i + 1];
-        }
-    }
-    cout << endl;
-    cout << "Input: " << endl; 
-    for(unsigned int i = 0; i < X.size(); i++) {
-        cout << X[i] << " ";
-    }
-    cout << endl;
-    cout << "Result: " << result << endl;
+
+    cout << "MSE: " << sqrt(mean_squared_error) / testing_data.size() << endl;
 
 /*
     LinearRegression lr(x, y, 11);  // create with two arrays

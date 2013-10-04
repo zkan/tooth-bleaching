@@ -21,7 +21,7 @@ double LinearRegression::string_to_double(string str) {
 
 // credit: heeen's reply at 
 // http://stackoverflow.com/questions/599989/is-there-a-built-in-way-to-split-strings-in-c
-vector<string> LinearRegression::split(string str, string delimiters) {
+vector<string> LinearRegression::split(string str, string delimiters, int mode) {
     vector<string> tokens;
     
     // skip delimiters at beginning
@@ -30,7 +30,9 @@ vector<string> LinearRegression::split(string str, string delimiters) {
     string::size_type pos = str.find_first_of(delimiters, last_pos);
 
     // insert first column for data X
-    tokens.push_back("1");
+    if(TRAINING == mode) {
+        tokens.push_back("1");
+    }
 
     // npos is a static member constant value (-1) with the greatest 
     // possible value for an element of type size_t.
@@ -71,7 +73,7 @@ void LinearRegression::read_training_data(char* file_data) {
         }
         
         // split the data into tokens and add 1 to the first column
-        tokens = split(line, ", ");
+        tokens = split(line, ", ", TRAINING);
         // first to second last column are data X
         for(unsigned int i = 0; i < tokens.size() - 1; i++) {
             val.push_back(string_to_double(tokens[i]));
@@ -80,6 +82,35 @@ void LinearRegression::read_training_data(char* file_data) {
 
         // last column is the predicted data y
         this->_predicted_data.push_back(string_to_double(tokens[tokens.size() - 1]));
+
+        val.clear();
+    }
+}
+
+void LinearRegression::read_testing_data(char* file_data) {
+    ifstream ifile;
+    ifile.open(file_data);
+
+    vector<string> tokens;
+    vector<double> val;
+    string line;
+    while(!ifile.eof()) {
+        getline(ifile, line);
+        // skip an empty line
+        if(line.empty()) {
+            continue;
+        }
+        
+        // split the data into tokens and add 1 to the first column
+        tokens = split(line, ", ", TESTING);
+        // first to second last column are data X
+        for(unsigned int i = 0; i < tokens.size() - 1; i++) {
+            val.push_back(string_to_double(tokens[i]));
+        }
+        this->_testing_data.push_back(val);
+
+        // last column is the predicted data y
+        this->_testing_predicted_data.push_back(string_to_double(tokens[tokens.size() - 1]));
 
         val.clear();
     }
@@ -163,7 +194,7 @@ void LinearRegression::gradient_descent(double alpha, int num_iters, bool norm) 
 
     double J = 0;
     for(int iter = 0; iter < num_iters; iter++) {
-        cout << "Iter " << iter + 1 << ": ";
+        //cout << "Iter " << iter + 1 << ": ";
 
         // predict first
         vector<double> predictions;
@@ -188,10 +219,10 @@ void LinearRegression::gradient_descent(double alpha, int num_iters, bool norm) 
         }
         
         J = compute_cost(this->_data, this->_predicted_data, this->_theta);
-        cout << J << endl;
+        //cout << J << endl;
         J_history.push_back(J);
     }
-    cout << endl;
+    //cout << endl;
 }
 
 void LinearRegression::print_theta() {
@@ -212,5 +243,13 @@ vector<double> LinearRegression::get_mean() {
 
 vector<double> LinearRegression::get_std() {
     return this->_std;
+}
+
+vector< vector<double> > LinearRegression::get_testing_data() {
+    return this->_testing_data;
+}
+
+vector<double> LinearRegression::get_testing_predicted_data() {
+    return this->_testing_predicted_data;
 }
 
