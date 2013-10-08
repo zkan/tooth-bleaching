@@ -7,6 +7,18 @@
 
 using namespace std;
 
+double distanceCalculate(double x1, double y1, double z1, double x2, double y2, double z2) {
+    double x = x1 - x2;
+    double y = y1 - y2;
+    double z = z1 - z2;
+    double dist;
+
+    dist = pow(x, 2) + pow(y, 2) + pow(z, 2);   //calculating distance by euclidean formula
+    dist = sqrt(dist);                          //sqrt is function in math.h
+
+    return dist;
+}
+
 int main(int argc, char *argv[]) {
     double alpha = 0.01;
     int num_iters = 1500;
