@@ -116,6 +116,40 @@ void LinearRegression::read_testing_data(char* file_data) {
     }
 }
 
+void LinearRegression::read_tooth_color_data(char* file_data, int mode) {
+    ifstream ifile;
+    ifile.open(file_data);
+
+    vector<string> tokens;
+    vector<double> val;
+    string line;
+    while(!ifile.eof()) {
+        getline(ifile, line);
+        // skip an empty line
+        if(line.empty()) {
+            continue;
+        }
+        
+        tokens = split(line, ", ", TESTING);
+        
+        tooth_color t;
+
+        t.label = tokens[0];
+        for(unsigned int i = 1; i < tokens.size(); i++) {
+            t.val.push_back(string_to_double(tokens[i]));
+        }
+
+        if( BEFORE == mode ) {
+            this->tooth_color_data_before.push_back(t);
+        }
+        else {
+            this->tooth_color_data_after.push_back(t);
+        }
+
+        t.val.clear();
+    }
+}
+
 double LinearRegression::dot_product(vector<double> a, vector<double> b) {
     double sum_product = 0;
 
@@ -231,6 +265,18 @@ void LinearRegression::print_theta() {
         cout << this->_theta[i] << endl;
     }
     cout << endl;
+}
+
+double LinearRegression::distanceCalculate(double x1, double y1, double z1, double x2, double y2, double z2) {
+    double x = x1 - x2;
+    double y = y1 - y2;
+    double z = z1 - z2;
+    double dist;
+
+    dist = pow(x, 2) + pow(y, 2) + pow(z, 2);   //calculating distance by euclidean formula
+    dist = sqrt(dist);                          //sqrt is function in math.h
+
+    return dist;
 }
 
 vector<double> LinearRegression::get_theta() {

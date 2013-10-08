@@ -15,8 +15,15 @@
 
 #define TRAINING 1
 #define TESTING  2
+#define BEFORE   3
+#define AFTER    4
 
 using namespace std;
+
+struct tooth_color {
+    string label;
+    vector<double> val;
+};
 
 class LinearRegression {
     public:
@@ -25,6 +32,7 @@ class LinearRegression {
 
         void read_training_data(char* file_data);
         void read_testing_data(char* file_data);
+        void read_tooth_color_data(char* file_data, int mode);
         void print_data();
         void gradient_descent(double alpha, int num_iters, bool norm);
         void print_theta();
@@ -34,6 +42,9 @@ class LinearRegression {
         vector< vector<double> > get_testing_data();
         vector<double> get_testing_predicted_data();
         void classify(vector< vector<double> > X);
+        double distanceCalculate(double x1, double y1, double z1, double x2, double y2, double z2);
+        vector<tooth_color> tooth_color_data_before;
+        vector<tooth_color> tooth_color_data_after;
 
     private:
         vector< vector<double> > _data;
