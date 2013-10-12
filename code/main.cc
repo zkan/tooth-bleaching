@@ -8,7 +8,7 @@
 using namespace std;
 
 int main(int argc, char *argv[]) {
-    cout << "-- Tooth Shade Predictor --" << endl << endl;
+    cout << "-- Tooth Shade Predictor --" << endl;
 
     ToothShadePredictor tsp;
 
@@ -26,18 +26,25 @@ int main(int argc, char *argv[]) {
 
     tsp.print_vMSE();
 
-/*
-
+    // Input unknown data
     vector<double> X;
 
     X.push_back( 77.6 );
     X.push_back( 3.4 );
     X.push_back( 28 );
 
-    double result = lr.estimate( X, norm );
+    vector<double> results = tsp.estimate( X );
+    
+    cout << "Results for X( 77.6, 3.4, 28 ): ";
+    for ( unsigned int i = 0; i < results.size(); i++ ) {
+        cout << results[ i ] << " ";
+    }
+    cout << endl;
 
-    cout << "Result: " << result << endl << endl;
+    cout << "Delta E: ";
+    cout << tsp.compute_delta_E( X, results ) << endl;
 
+/*
     lr.set_standard_vita_data( "../data/input/color-map-before.txt", BEFORE_BLEECHING );
     lr.set_standard_vita_data( "../data/input/color-map-after.txt", AFTER_BLEECHING );
 
