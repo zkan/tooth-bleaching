@@ -36,6 +36,36 @@ vector<double> ToothShadePredictor::estimate( vector<double> data ) {
     return results;
 }
 
+void ToothShadePredictor::train2weeks( char* L_2weeks_training_data, char* a_2weeks_training_data, char* b_2weeks_training_data ) {
+    this->_L_2weeks_model.set_training_data( L_2weeks_training_data );
+    this->_a_2weeks_model.set_training_data( a_2weeks_training_data );
+    this->_b_2weeks_model.set_training_data( b_2weeks_training_data );
+    
+    this->_L_2weeks_model.run_gradient_descent();
+    this->_a_2weeks_model.run_gradient_descent();
+    this->_b_2weeks_model.run_gradient_descent();
+}
+
+void ToothShadePredictor::test2weeks( char* L_2weeks_testing_data, char* a_2weeks_testing_data, char* b_2weeks_testing_data ) {
+    this->_L_2weeks_model.set_testing_data( L_2weeks_testing_data );
+    this->_a_2weeks_model.set_testing_data( a_2weeks_testing_data );
+    this->_b_2weeks_model.set_testing_data( b_2weeks_testing_data );
+    
+    this->_vMSE_2weeks.push_back( this->_L_2weeks_model.compute_MSE() );
+    this->_vMSE_2weeks.push_back( this->_a_2weeks_model.compute_MSE() );
+    this->_vMSE_2weeks.push_back( this->_b_2weeks_model.compute_MSE() );
+}
+
+vector<double> ToothShadePredictor::estimate2weeks( vector<double> data ) {
+    vector<double> results;
+    
+    results.push_back( this->_L_2weeks_model.estimate( data ) );
+    results.push_back( this->_a_2weeks_model.estimate( data ) );
+    results.push_back( this->_b_2weeks_model.estimate( data ) );
+    
+    return results;
+}
+
 double ToothShadePredictor::compute_delta_E( vector<double> data_before, vector<double> data_after ) {
     double delta_E = 0;
     
@@ -130,6 +160,14 @@ void ToothShadePredictor::print_vMSE() {
     cout << "MSE for Each Model: ";
     for ( unsigned int i = 0; i < this->_vMSE.size(); i++ ) {
         cout << this->_vMSE[ i ] << " ";
+    }
+    cout << endl;
+}
+
+void ToothShadePredictor::print_vMSE_2weeks() {
+    cout << "MSE for Each Model (2 weeks): ";
+    for ( unsigned int i = 0; i < this->_vMSE_2weeks.size(); i++ ) {
+        cout << this->_vMSE_2weeks[ i ] << " ";
     }
     cout << endl;
 }
