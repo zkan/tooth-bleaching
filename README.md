@@ -1,4 +1,4 @@
-Tooth Bleaching
+Tooth Shade Predictor
 ===============
 
-Prediction of Color Change After Tooth Bleaching
+Program to predict the color change of tooth after tooth bleaching.
