@@ -73,6 +73,7 @@ int main(int argc, char *argv[]) {
 
     // ------------------------------------------------
 
+/*
     tsp.set_standard_vita_data( "../data/input/color-map-before.txt", BEFORE_BLEECHING );
     tsp.set_standard_vita_data( "../data/input/color-map-after.txt", AFTER_BLEECHING );
 
@@ -96,7 +97,8 @@ int main(int argc, char *argv[]) {
         }
         cout << endl;
     }
-    
+*/
+
     return 1;
 }
 
