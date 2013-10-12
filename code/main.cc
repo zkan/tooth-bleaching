@@ -1,131 +1,69 @@
 /*
-    Test driver to test linreg.h linear regression class
-*/
-#include <iostream>
-#include <fstream>
+ * Test driver to test Tooth Shade Predictor program
+ */
+
+#include "tooth_shade_predictor.h"
 #include "linreg.h"
 
 using namespace std;
 
 int main(int argc, char *argv[]) {
-    double alpha = 0.01;
-    int num_iters = 1500;
-    bool norm = true;
+    cout << "-- Tooth Shade Predictor --" << endl << endl;
 
-    cout << "Linear Regression Test\n" << endl;
+    ToothShadePredictor tsp;
 
-    LinearRegression lr;
-    lr.read_training_data(argv[1]);
-    //lr.print_data();
-    
-    lr.gradient_descent(alpha, num_iters, norm);
-    //lr.print_theta();
-    
-    lr.read_testing_data(argv[2]);
-    vector< vector<double> > testing_data = lr.get_testing_data();
-    vector<double> testing_predicted_data = lr.get_testing_predicted_data();
+    tsp.train( 
+        "../data/input/training/L.txt", 
+        "../data/input/training/a.txt", 
+        "../data/input/training/b.txt" 
+    );
 
-    vector<double> theta = lr.get_theta();
+    tsp.test(
+        "../data/input/testing/L.txt", 
+        "../data/input/testing/a.txt", 
+        "../data/input/testing/b.txt" 
+    );
 
-    double mean_squared_error = 0;
+    tsp.print_vMSE();
 
-    for(unsigned int i = 0; i < testing_data.size(); i++) {
-        vector<double> X = testing_data[i];
-        
-        double result = theta[0];
-        if(norm) {
-            vector<double> mean = lr.get_mean();
-            vector<double> std = lr.get_std();
-     /*       
-            cout << "Mean :" << endl; 
-            for(unsigned int i = 0; i < mean.size(); i++) {
-                cout << mean[i] << " ";
-            }
-            cout << endl;
-            
-            cout << "STD :" << endl; 
-            for(unsigned int i = 0; i < std.size(); i++) {
-                cout << std[i] << " ";
-            }
-            cout << endl;
-      */      
-            for(unsigned int i = 0; i < X.size(); i++) {
-                result += ((X[i] - mean[i + 1]) / std[i + 1]) * theta[i + 1];
-            }
-        }
-        else {
-            for(unsigned int i = 0; i < X.size(); i++) {
-                result += X[i] * theta[i + 1];
-            }
-        }
-        /*
-        cout << endl;
-        cout << "Input: " << endl; 
-        for(unsigned int j = 0; j < X.size(); j++) {
-            cout << X[j] << " ";
-        }
-        cout << endl;
-        cout << "Actual Result: " << testing_predicted_data[i] << endl;
-        cout << "Predicted Result: " << result << endl << endl;
-        //*/
+/*
 
-        mean_squared_error += (testing_predicted_data[i] - result) * (testing_predicted_data[i] - result);
-    }
+    vector<double> X;
 
-    cout << "MSE: " << sqrt(mean_squared_error) / testing_data.size() << endl << endl;
+    X.push_back( 77.6 );
+    X.push_back( 3.4 );
+    X.push_back( 28 );
 
-    lr.read_tooth_color_data("../data/input/color-map-before.txt", BEFORE);
-    lr.read_tooth_color_data("../data/input/color-map-after.txt", AFTER);
+    double result = lr.estimate( X, norm );
 
-    for(unsigned int i = 0; i < lr.tooth_color_data_before.size(); i++) {
-        cout << lr.tooth_color_data_before[i].label << " ";
-        for(unsigned int j = 0; j < lr.tooth_color_data_before[i].val.size(); j++) {
-            cout << lr.tooth_color_data_before[i].val[j] << " ";
+    cout << "Result: " << result << endl << endl;
+
+    lr.set_standard_vita_data( "../data/input/color-map-before.txt", BEFORE_BLEECHING );
+    lr.set_standard_vita_data( "../data/input/color-map-after.txt", AFTER_BLEECHING );
+
+    vector<vita> standard_vita_data_before = lr.get_standard_vita_data_before();
+    vector<vita> standard_vita_data_after = lr.get_standard_vita_data_after();
+
+    cout << "Standard Vita Before Bleeching" << endl;
+    for ( unsigned int i = 0; i < standard_vita_data_before.size(); i++ ) {
+        cout << standard_vita_data_before[ i ].label << " ";
+        for ( unsigned int j = 0; j < standard_vita_data_before[i].val.size(); j++ ) {
+            cout << standard_vita_data_before[ i ].val[ j ] << " ";
         }
         cout << endl;
     }
     cout << endl;
-
-/*
-    LinearRegression lr(x, y, 11);  // create with two arrays
-    cout << "Number of x,y pairs = " << lr.items() << endl;
-    cout << lr.getA() << " " << lr.getB() << endl;
-    cout << "Coefficient of Determination = "
-         << lr.getCoefDeterm() << endl;
-    cout << "Coefficient of Correlation = "
-         << lr.getCoefCorrel() << endl;
-    cout << "Standard Error of Estimate = "
-         << lr.getStdErrorEst() << endl;
-
-    cout << "\nLinear Regression Test Part 2 (using Point2Ds)\n" << endl;
-
-    LinearRegression lr2(p, 11);  // create with array of points
-    cout << "Number of x,y pairs = " << lr2.items() << endl;
-    cout << lr2.getA() << " " << lr2.getB() << endl;
-    cout << "Coefficient of Determination = "
-         << lr2.getCoefDeterm() << endl;
-    cout << "Coefficient of Correlation = "
-         << lr2.getCoefCorrel() << endl;
-    cout << "Standard Error of Estimate = "
-         << lr2.getStdErrorEst() << endl;
-
-    cout << "\nLinear Regression Test Part 3 (empty instance)\n" << endl;
-
-    LinearRegression lr3;   // empty instance of linear regression
-
-    for (int i = 0; i < 11; i++)
-        lr3.addPoint(p[i]);
-
-    cout << "Number of x,y pairs = " << lr3.items() << endl;
-    cout << lr3.getA() << " " << lr3.getB() << endl;
-    cout << "Coefficient of Determination = "
-         << lr3.getCoefDeterm() << endl;
-    cout << "Coefficient of Correlation = "
-         << lr3.getCoefCorrel() << endl;
-    cout << "Standard Error of Estimate = "
-         << lr3.getStdErrorEst() << endl;
-*/
-
+    
+    cout << "Standard Vita After Bleeching" << endl;
+    for ( unsigned int i = 0; i < standard_vita_data_after.size(); i++ ) {
+        cout << standard_vita_data_after[ i ].label << " ";
+        for ( unsigned int j = 0; j < standard_vita_data_after[i].val.size(); j++ ) {
+            cout << standard_vita_data_after[ i ].val[ j ] << " ";
+        }
+        cout << endl;
+    }
+    cout << endl;
+*/    
     return 1;
 }
 
