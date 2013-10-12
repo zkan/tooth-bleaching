@@ -26,6 +26,16 @@ void ToothShadePredictor::test( char* L_testing_data, char* a_testing_data, char
     this->_vMSE.push_back( this->_b_model.compute_MSE() );
 }
 
+vector<double> ToothShadePredictor::estimate( vector<double> data ) {
+    vector<double> results;
+    
+    results.push_back( this->_L_model.estimate( data ) );
+    results.push_back( this->_a_model.estimate( data ) );
+    results.push_back( this->_b_model.estimate( data ) );
+    
+    return results;
+}
+
 double ToothShadePredictor::compute_delta_E( vector<double> data_before, vector<double> data_after ) {
     double delta_E = 0;
     
@@ -117,7 +127,7 @@ vector<vita> ToothShadePredictor::get_standard_vita_data_after() {
 }
 
 void ToothShadePredictor::print_vMSE() {
-    cout << "-- MSE for Each Model --" << endl;
+    cout << "MSE for Each Model: ";
     for ( unsigned int i = 0; i < this->_vMSE.size(); i++ ) {
         cout << this->_vMSE[ i ] << " ";
     }

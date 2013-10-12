@@ -23,7 +23,7 @@ class ToothShadePredictor {
         
         void train( char* L_training_data, char* a_training_data, char* b_training_data );
         void test( char* L_testing_data, char* a_testing_data, char* b_testing_data );
-        double estimate( vector<double> data );
+        vector<double> estimate( vector<double> data );
 
         // Data before and data after must have the same dimension.
         double compute_delta_E( vector<double> data_before, vector<double> data_after );
