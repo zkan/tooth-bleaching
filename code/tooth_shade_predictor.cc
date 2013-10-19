@@ -109,6 +109,16 @@ void ToothShadePredictor::set_standard_vita_data( char* data_file ) {
     }
 }
 
+vector<double> ToothShadePredictor::map_to_Lab( string vita ) {
+    for ( unsigned int i = 0; i < this->_standard_vita_data.size(); i++ ) {
+        if ( vita == this->_standard_vita_data[ i ].label ) {
+            return this->_standard_vita_data[ i ].val;
+        }
+    }
+
+    return this->_standard_vita_data[0].val;
+}
+
 string ToothShadePredictor::map_to_vita( double L, double a, double b ) {
     string vita;
     double dist = 100000;

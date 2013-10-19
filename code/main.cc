@@ -8,9 +8,42 @@
 using namespace std;
 
 int main(int argc, char *argv[]) {
+    ToothShadePredictor tsp;
+    
     cout << "-- Tooth Shade Predictor --" << endl;
     
-    // Input data from user.
+    // Read the shade tabs first.
+    tsp.set_standard_vita_data( "../data/input/shade-tabs.txt" );
+    vector<vita> standard_vita_data = tsp.get_standard_vita_data();
+
+    cout << "Shade Tabs: " << endl;
+    for ( unsigned int i = 0; i < standard_vita_data.size(); i++ ) {
+        cout << standard_vita_data[ i ].label << " ";
+        for ( unsigned int j = 0; j < standard_vita_data[i].val.size(); j++ ) {
+            cout << standard_vita_data[ i ].val[ j ] << " ";
+        }
+        cout << endl;
+    }
+   
+    cout << endl;
+
+    // If input from user is vita shade, then 
+    // map it to L, a, and b first.
+    string vita_input = "C2";
+    cout << "Input " << vita_input << " maps to ";
+    vector<double> X_from_vita = tsp.map_to_Lab( vita_input );
+    for ( unsigned int i = 0; i < X_from_vita.size(); i++ ) {
+        cout << X_from_vita[ i ];
+        if ( i < X_from_vita.size() - 1 ) {
+            cout << ", ";
+        }
+    }
+    cout << endl;
+    
+    cout << endl;
+    // --------------------------------------------------------------
+    
+    // Input from user (L, a, and b).
     vector<double> X;
 
 /*
@@ -27,23 +60,6 @@ int main(int argc, char *argv[]) {
     X.push_back( -0.5 );
     X.push_back( 16.8 );
 
-    ToothShadePredictor tsp;
-    
-    // Read the shade tabs first.
-    tsp.set_standard_vita_data( "../data/input/shade-tabs.txt" );
-    vector<vita> standard_vita_data = tsp.get_standard_vita_data();
-
-    cout << "Shade Tabs: " << endl;
-    for ( unsigned int i = 0; i < standard_vita_data.size(); i++ ) {
-        cout << standard_vita_data[ i ].label << " ";
-        for ( unsigned int j = 0; j < standard_vita_data[i].val.size(); j++ ) {
-            cout << standard_vita_data[ i ].val[ j ] << " ";
-        }
-        cout << endl;
-    }
-   
-    cout << endl;
-    
     // --------------------------------------------------------------
 
     cout << "Input X( ";

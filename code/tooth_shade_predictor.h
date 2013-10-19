@@ -30,6 +30,7 @@ class ToothShadePredictor {
         double compute_delta_E( vector<double> data_before, vector<double> data_after );
         
         void set_standard_vita_data( char* data_file );
+        vector<double> map_to_Lab( string vita );
         string map_to_vita( double L, double a, double b );
 
         vector<vita> get_standard_vita_data();
