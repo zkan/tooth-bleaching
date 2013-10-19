@@ -13,13 +13,56 @@ int main(int argc, char *argv[]) {
     // Input data from user.
     vector<double> X;
 
+/*
     X.push_back( 77.6 );
     X.push_back( 3.4 );
     X.push_back( 28 );
+//*/ 
+/*
+    X.push_back( 69.1 );
+    X.push_back( 1.3 );
+    X.push_back( 28.5 );
+//*/
+    X.push_back( 77.1 );
+    X.push_back( -0.5 );
+    X.push_back( 16.8 );
 
     ToothShadePredictor tsp;
+    
+    // Read the shade tabs first.
+    tsp.set_standard_vita_data( "../data/input/shade-tabs.txt" );
+    vector<vita> standard_vita_data = tsp.get_standard_vita_data();
 
-    // After finishing the entire tooth bleeching process
+    cout << "Shade Tabs: " << endl;
+    for ( unsigned int i = 0; i < standard_vita_data.size(); i++ ) {
+        cout << standard_vita_data[ i ].label << " ";
+        for ( unsigned int j = 0; j < standard_vita_data[i].val.size(); j++ ) {
+            cout << standard_vita_data[ i ].val[ j ] << " ";
+        }
+        cout << endl;
+    }
+   
+    cout << endl;
+    
+    // --------------------------------------------------------------
+
+    cout << "Input X( ";
+    for ( unsigned int i = 0; i < X.size(); i++ ) {
+        cout << X[ i ];
+        if ( i < X.size() - 1 ) {
+            cout << ", ";
+        }
+    }
+    cout << " ) maps to ";
+    string vita = tsp.map_to_vita( X[0], X[1], X[2] );
+    cout << vita << endl;
+   
+    cout << endl;
+    
+    // --------------------------------------------------------------
+
+    // Start the training and testing processes (After finishing 
+    // the entire tooth bleeching process).
     tsp.train( 
         "../data/input/training/L.txt", 
         "../data/input/training/a.txt", 
@@ -36,7 +79,14 @@ int main(int argc, char *argv[]) {
     
     vector<double> results = tsp.estimate( X );
     
-    cout << "Results for X( 77.6, 3.4, 28 ): ";
+    cout << "Results for X( ";
+    for ( unsigned int i = 0; i < X.size(); i++ ) {
+        cout << X[ i ];
+        if ( i < X.size() - 1 ) {
+            cout << ", ";
+        }
+    }
+    cout << " ): ";
     for ( unsigned int i = 0; i < results.size(); i++ ) {
         cout << results[ i ] << " ";
     }
@@ -45,7 +95,23 @@ int main(int argc, char *argv[]) {
     cout << "Delta E: ";
     cout << tsp.compute_delta_E( X, results ) << endl;
     
-    // After 2 weeks of the tooth bleeching process
+    cout << "Output Y( "; 
+    for ( unsigned int i = 0; i < results.size(); i++ ) {
+        cout << results[ i ] ;
+        if ( i < results.size() - 1 ) {
+            cout << ", ";
+        }
+    }
+    cout << " ) maps to ";
+    vita = tsp.map_to_vita( results[0], results[1], results[2] );
+    cout << vita << endl;
+
+    cout << endl;
+
+    // --------------------------------------------------------------
+    
+    // Start the training and testing processes (After finishing 
+    // the entire tooth bleeching process).
     tsp.train2weeks( 
         "../data/input/training/L_after2weeks.txt", 
         "../data/input/training/a_after2weeks.txt", 
@@ -60,44 +126,34 @@ int main(int argc, char *argv[]) {
     
     tsp.print_vMSE_2weeks();
     
-    results = tsp.estimate2weeks( X );
+    vector<double> results2weeks = tsp.estimate2weeks( X );
     
-    cout << "Results for X( 77.6, 3.4, 28 ) after 2 weeks: ";
-    for ( unsigned int i = 0; i < results.size(); i++ ) {
-        cout << results[ i ] << " ";
+    cout << "Results for X( ";
+    for ( unsigned int i = 0; i < X.size(); i++ ) {
+        cout << X[ i ];
+        if ( i < X.size() - 1 ) {
+            cout << ", ";
+        }
+    }
+    cout << " ) after 2 weeks: ";
+    for ( unsigned int i = 0; i < results2weeks.size(); i++ ) {
+        cout << results2weeks[ i ] << " ";
     }
     cout << endl;
 
     cout << "Delta E after 2 weeks: ";
-    cout << tsp.compute_delta_E( X, results ) << endl;
-
-    // ------------------------------------------------
-
-/*
-    tsp.set_standard_vita_data( "../data/input/color-map-before.txt", BEFORE_BLEECHING );
-    tsp.set_standard_vita_data( "../data/input/color-map-after.txt", AFTER_BLEECHING );
-
-    vector<vita> standard_vita_data_before = tsp.get_standard_vita_data_before();
-    vector<vita> standard_vita_data_after = tsp.get_standard_vita_data_after();
-
-    cout << "Standard Vita Before Bleeching: " << endl;
-    for ( unsigned int i = 0; i < standard_vita_data_before.size(); i++ ) {
-        cout << standard_vita_data_before[ i ].label << " ";
-        for ( unsigned int j = 0; j < standard_vita_data_before[i].val.size(); j++ ) {
-            cout << standard_vita_data_before[ i ].val[ j ] << " ";
-        }
-        cout << endl;
-    }
+    cout << tsp.compute_delta_E( X, results2weeks ) << endl;
     
-    cout << "Standard Vita After Bleeching: " << endl;
-    for ( unsigned int i = 0; i < standard_vita_data_after.size(); i++ ) {
-        cout << standard_vita_data_after[ i ].label << " ";
-        for ( unsigned int j = 0; j < standard_vita_data_after[i].val.size(); j++ ) {
-            cout << standard_vita_data_after[ i ].val[ j ] << " ";
+    cout << "Output after 2 weeks Y( "; 
+    for ( unsigned int i = 0; i < results2weeks.size(); i++ ) {
+        cout << results2weeks[ i ] ;
+        if ( i < results2weeks.size() - 1 ) {
+            cout << ", ";
         }
-        cout << endl;
     }
-*/
+    cout << " ) maps to ";
+    vita = tsp.map_to_vita( results2weeks[0], results2weeks[1], results2weeks[2] );
+    cout << vita << endl;
 
     return 1;
 }

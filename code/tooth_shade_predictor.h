@@ -6,9 +6,6 @@
 #ifndef _TOOTH_SHADE_PREDICTOR_H_
 #define _TOOTH_SHADE_PREDICTOR_H_
 
-#define BEFORE_BLEECHING 1
-#define AFTER_BLEECHING  2
-
 #include "linreg.h"
 
 struct vita {
@@ -32,14 +29,10 @@ class ToothShadePredictor {
         // Data before and data after must have the same dimension.
         double compute_delta_E( vector<double> data_before, vector<double> data_after );
         
-        // Mode: before and after bleeching
-        void set_standard_vita_data( char* data_file, int mode );
-       
-        // Mode: before and after bleeching
-        string map_to_vita( double L, double a, double b, int mode );
+        void set_standard_vita_data( char* data_file );
+        string map_to_vita( double L, double a, double b );
 
-        vector<vita> get_standard_vita_data_before();
-        vector<vita> get_standard_vita_data_after();
+        vector<vita> get_standard_vita_data();
 
         void print_vMSE();
         void print_vMSE_2weeks();
@@ -53,8 +46,7 @@ class ToothShadePredictor {
         LinearRegression _b_2weeks_model;
         vector<double> _vMSE;
         vector<double> _vMSE_2weeks;
-        vector<vita> _standard_vita_data_before;
-        vector<vita> _standard_vita_data_after;
+        vector<vita> _standard_vita_data;
 
         double string_to_double( string str );
         vector<string> split( string str, string delimiters );

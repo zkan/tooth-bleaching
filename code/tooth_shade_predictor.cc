@@ -78,7 +78,7 @@ double ToothShadePredictor::compute_delta_E( vector<double> data_before, vector<
     return delta_E;
 }
 
-void ToothShadePredictor::set_standard_vita_data( char* data_file, int mode ) {
+void ToothShadePredictor::set_standard_vita_data( char* data_file ) {
     ifstream ifile;
     ifile.open( data_file );
 
@@ -103,57 +103,33 @@ void ToothShadePredictor::set_standard_vita_data( char* data_file, int mode ) {
             v.val.push_back( string_to_double( tokens[ i ] ) );
         }
 
-        if ( BEFORE_BLEECHING == mode ) {
-            this->_standard_vita_data_before.push_back( v );
-        }
-        else if ( AFTER_BLEECHING == mode ) {
-            this->_standard_vita_data_after.push_back( v );
-        }
+        this->_standard_vita_data.push_back( v );
 
         v.val.clear();
     }
 }
 
-string ToothShadePredictor::map_to_vita( double L, double a, double b, int mode ) {
-    string label;
+string ToothShadePredictor::map_to_vita( double L, double a, double b ) {
+    string vita;
     double dist = 100000;
     
-    if ( BEFORE_BLEECHING == mode ) {
-        for ( unsigned int i = 0; i < this->_standard_vita_data_before.size(); i++ ) {
-            double L_diff = L - this->_standard_vita_data_before[ i ].val[0];
-            double a_diff = a - this->_standard_vita_data_before[ i ].val[1];
-            double b_diff = b - this->_standard_vita_data_before[ i ].val[2];
-            
-            double dist_to_current_vita = sqrt( pow( L_diff, 2 ) + pow( a_diff, 2 ) + pow( b_diff, 2 ) );
-            if ( dist < dist_to_current_vita ) {
-                label = this->_standard_vita_data_before[ i ].label;
-                dist = dist_to_current_vita;
-            } 
-        }
-    }
-    else if ( AFTER_BLEECHING == mode ) {
-        for ( unsigned int i = 0; i < this->_standard_vita_data_after.size(); i++ ) {
-            double L_diff = L - this->_standard_vita_data_after[ i ].val[0];
-            double a_diff = a - this->_standard_vita_data_after[ i ].val[1];
-            double b_diff = b - this->_standard_vita_data_after[ i ].val[2];
-            
-            double dist_to_current_vita = sqrt( pow( L_diff, 2 ) + pow( a_diff, 2 ) + pow( b_diff, 2 ) );
-            if ( dist < dist_to_current_vita ) {
-                label = this->_standard_vita_data_after[ i ].label;
-                dist = dist_to_current_vita;
-            } 
-        }
+    for ( unsigned int i = 0; i < this->_standard_vita_data.size(); i++ ) {
+        double L_diff = L - this->_standard_vita_data[ i ].val[0];
+        double a_diff = a - this->_standard_vita_data[ i ].val[1];
+        double b_diff = b - this->_standard_vita_data[ i ].val[2];
+        
+        double dist_to_current_vita = sqrt( pow( L_diff, 2 ) + pow( a_diff, 2 ) + pow( b_diff, 2 ) );
+        if ( dist > dist_to_current_vita ) {
+            vita = this->_standard_vita_data[ i ].label;
+            dist = dist_to_current_vita;
+        } 
     }
     
-    return label;
+    return vita;
 }
 
-vector<vita> ToothShadePredictor::get_standard_vita_data_before() {
-    return this->_standard_vita_data_before;
-}
-
-vector<vita> ToothShadePredictor::get_standard_vita_data_after() {
-    return this->_standard_vita_data_after;
+vector<vita> ToothShadePredictor::get_standard_vita_data() {
+    return this->_standard_vita_data;
 }
 
 void ToothShadePredictor::print_vMSE() {
