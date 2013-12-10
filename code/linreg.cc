@@ -126,6 +126,8 @@ void LinearRegression::run_gradient_descent() {
 double LinearRegression::compute_MSE() {
     double MSE = 0;
 
+    this->print_theta();
+
     for ( unsigned int i = 0; i < this->_testing_data.size(); i++ ) {
         vector<double> X = this->_testing_data[ i ];
         double result = this->_theta[0];
